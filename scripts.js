@@ -1,13 +1,19 @@
+const milToStandard = (militaryTime) => {
+  standardTime = militaryTime.split(':');
+  return (standardTime[0].charAt(0) == 1 && standardTime[0].charAt(1) > 2) ? (standardTime[0] - 6) + ':' + standardTime[1] + ':' + standardTime[2] + ' P.M.' : standardTime.join(':') + ' A.M.'
+};
+
 const displayUserInfo = (user_data) => {
   const dateWithTime = new Date();
   const date = dateWithTime.toJSON().slice(0, 10).replace(/-/g, '/');
   const militaryTime = dateWithTime.toJSON().slice(11, 19);
+  const standardTime = milToStandard(militaryTime);
 
   $('.user_info').prepend(`
     <h1>Zones</h1>
     <p>${user_data.username}</p >
     <p>${date}</p>
-    <p>${militaryTime}</p>
+    <p>${standardTime}</p>
   `);
 };
 
