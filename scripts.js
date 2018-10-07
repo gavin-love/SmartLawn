@@ -1,3 +1,16 @@
+const displayUserInfo = (user_data) => {
+  const dateWithTime = new Date();
+  const date = dateWithTime.toJSON().slice(0, 10).replace(/-/g, '/');
+  const militaryTime = dateWithTime.toJSON().slice(11, 19);
+
+  $('.user_info').prepend(`
+    <h1>Zones</h1>
+    <p>${user_data.username}</p >
+    <p>${date}</p>
+    <p>${militaryTime}</p>
+  `);
+};
+
 const retrievePerson = async () => {
   $('.user_info').empty();
 
@@ -17,7 +30,7 @@ const retrievePerson = async () => {
     });
 
     const user_data = await response.json();
-    console.log(user_data);
+    displayUserInfo(user_data);
 
   } catch (err) {
     console.log(err)
