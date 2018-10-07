@@ -30,6 +30,7 @@ const displayZones = (zones) => {
         <h1>${zone.name}</h1>
         <p>${nozzle}: ${zone.customNozzle.inchesPerHour}"/hr</p>
         <img src="${zone.imageUrl}">
+        <p class="start_successful"></p>
         <form>
           <input type="text" placeholder="duration">seconds</input>
           <button class="start">start</button>
@@ -45,7 +46,6 @@ const fetchPerson = async () => {
   const person_id = "2ee8a9ca-741d-4b1a-add3-8a7683e5aa28";
   const url = `https://api.rach.io/1/public/person/${person_id}`;
   const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
-
   const bearer = 'Bearer ' + bearer_token;
 
   try {
@@ -68,18 +68,39 @@ const fetchPerson = async () => {
   }
 };
 
-const fetchZone = (zone_id) => {
+const fetchZone = async (zone_id, zone_duration) => {
   const id = zone_id;
   const url = "https://api.rach.io/1/public/zone/start"
+  const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
+  const bearer = 'Bearer ' + bearer_token;
+  const zone_data = { id, duration: zone_duration };
 
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': bearer,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(zone_data)
+    });
 
+    const success = await response.ok;
+    if (success) {
+      $('.start_successful').text('System successfully started')
+    };
+
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 const startZone = () => {
   event.preventDefault();
   const zone_id = $(event.target).parent().parent().attr('id');
+  const zone_duration = parseInt($(event.target).siblings('input').val());
 
-  fetchZone(zone_id);
+  fetchZone(zone_id, zone_duration);
 }
 
 $('.zones').on('click', 'article .start', startZone);
