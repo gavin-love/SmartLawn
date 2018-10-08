@@ -12,7 +12,8 @@ const displayUserInfo = (user_data) => {
   const standardTime = milToStandard(militaryTime);
 
   $('.user_info').prepend(`
-    <h1>Zones</h1>
+    <h1>SmartLawn</h1>
+    <p>Zones</p>
     <p class="user_name">${user_data.username}</p>
     <p class="date">${date}</p>
     <p class="time">${standardTime}</p>
@@ -28,7 +29,7 @@ const displayZones = (zones) => {
 
     $('.zones').prepend(`
       <article id="${zone.id}">
-        <h1 class="zone_name">${zone.name}</h1>
+        <p class="zone_name">${zone.name}</p>
         <p class="nozzle_inches">${nozzle}: ${zone.customNozzle.inchesPerHour}"/hr</p>
         <img class="zone_image"src="${zone.imageUrl}">
         <p class="single_start_message"></p>
@@ -82,7 +83,7 @@ const getPerson = async () => {
     displayZones(zones);
 
   } catch (err) {
-    $('.invalid_user').text(err.message)
+    $('.invalid_user').text(err.message);
   };
 };
 
@@ -105,11 +106,11 @@ const postSingleZone = async (zone_id, zone_duration) => {
 
     const success = await response.ok;
     if (success) {
-      $('.single_start_message').text('System successfully started')
+      $('.single_start_message').text('System successfully started');
     };
 
   } catch (err) {
-    $('.single_start_message').text(err.message)
+    $('.single_start_message').text(err.message);
   };
 };
 
@@ -118,7 +119,6 @@ const postMultipleZones = async (zones) => {
   const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
   const bearer = 'Bearer ' + bearer_token;
   const all_zones_data = { zones: zones };
-  console.log(all_zones_data);
 
   try {
     const response = await fetch(url, {
@@ -131,16 +131,17 @@ const postMultipleZones = async (zones) => {
     });
 
     const success = await response.ok;
+
     if (success) {
-      $('.multiple_start_message').text('System successfully started')
+      $('.multiple_start_message').text('System successfully started');
     };
 
   } catch (err) {
-    $('.multiple_start_message').text(err.message)
+    $('.multiple_start_message').text(err.message);
   };
 };
 
-const identifyZone = () => {
+const identifySingleZone = () => {
   event.preventDefault();
 
   const zone_id = $(event.target).parent().parent().attr('id');
@@ -161,7 +162,6 @@ const identifyAllZones = () => {
   postMultipleZones(zones);
 };
 
-$('.zones').on('click', 'article .start_one_zone', identifyZone);
-$('.start_all').on('click', 'article .start_multiple_zones', identifyAllZones)
+$('.zones').on('click', 'article .start_one_zone', identifySingleZone);
+$('.start_all').on('click', 'article .start_multiple_zones', identifyAllZones);
 $(window).ready(getPerson);
-
