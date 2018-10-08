@@ -13,9 +13,10 @@ const displayUserInfo = (user_data) => {
 
   $('.user_info').prepend(`
     <h1>Zones</h1>
-    <p>${user_data.username}</p >
-    <p>${date}</p>
-    <p>${standardTime}</p>
+    <p class="user_name">${user_data.username}</p>
+    <p class="date">${date}</p>
+    <p class="time">${standardTime}</p>
+    <p class="invalid_user"></p>
   `);
 };
 
@@ -27,16 +28,16 @@ const displayZones = (zones) => {
 
     $('.zones').prepend(`
       <article id="${zone.id}">
-        <h1>${zone.name}</h1>
-        <p>${nozzle}: ${zone.customNozzle.inchesPerHour}"/hr</p>
-        <img src="${zone.imageUrl}">
-        <p class="start_successful"></p>
+        <h1 class="zone_name">${zone.name}</h1>
+        <p class="nozzle_inches">${nozzle}: ${zone.customNozzle.inchesPerHour}"/hr</p>
+        <img class="zone_image"src="${zone.imageUrl}">
+        <p class="single_start_message"></p>
         <form>
-          <input type="text" placeholder="duration">seconds</input>
+          <input class="duration" type="text" placeholder="duration">seconds</input>
           <button class="start_one_zone">start</button>
         </form>
       </article>
-    `)
+    `);
   });
 };
 
@@ -48,14 +49,15 @@ const displayStartAllZones = () => {
       <p>Start All Zones</p>
       <form>
         <input class="duration" type="text" placeholder="Duration">seconds</input>
-        <input class="sort_order"type="text" placeholder="Sort Order" />
+        <input class="sort_order" type="text" placeholder="Sort Order" />
         <button class="start_multiple_zones">Start</button>
+        <p class="multiple_start_message"></p>
       </form>
     </article>
   `);
 };
 
-const fetchPerson = async () => {
+const getPerson = async () => {
   $('.user_info').empty();
 
   const person_id = "2ee8a9ca-741d-4b1a-add3-8a7683e5aa28";
@@ -80,11 +82,11 @@ const fetchPerson = async () => {
     displayZones(zones);
 
   } catch (err) {
-    console.log(err)
-  }
+    $('.invalid_user').text(err.message)
+  };
 };
 
-const startZone = async (zone_id, zone_duration) => {
+const postSingleZone = async (zone_id, zone_duration) => {
   const id = zone_id;
   const url = "https://api.rach.io/1/public/zone/start"
   const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
@@ -103,13 +105,40 @@ const startZone = async (zone_id, zone_duration) => {
 
     const success = await response.ok;
     if (success) {
-      $('.start_successful').text('System successfully started')
+      $('.single_start_message').text('System successfully started')
     };
 
   } catch (err) {
-    console.log(err)
-  }
-}
+    $('.single_start_message').text(err.message)
+  };
+};
+
+const postMultipleZones = async (zones) => {
+  const url = "https://api.rach.io/1/public/zone/start_multiple"
+  const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
+  const bearer = 'Bearer ' + bearer_token;
+  const all_zones_data = { zones: zones };
+  console.log(all_zones_data);
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': bearer,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(all_zones_data)
+    });
+
+    const success = await response.ok;
+    if (success) {
+      $('.multiple_start_message').text('System successfully started')
+    };
+
+  } catch (err) {
+    $('.multiple_start_message').text(err.message)
+  };
+};
 
 const identifyZone = () => {
   event.preventDefault();
@@ -117,7 +146,7 @@ const identifyZone = () => {
   const zone_id = $(event.target).parent().parent().attr('id');
   const zone_duration = parseInt($(event.target).siblings('input').val());
 
-  startZone(zone_id, zone_duration);
+  postSingleZone(zone_id, zone_duration);
 };
 
 const identifyAllZones = () => {
@@ -129,10 +158,10 @@ const identifyAllZones = () => {
 
   $('.zones').find('article').each(function () { zones.push({ id: this.id, duration: zone_duration, sortOrder: sort_order }); });
 
-  console.log(zones);
+  postMultipleZones(zones);
 };
 
 $('.zones').on('click', 'article .start_one_zone', identifyZone);
 $('.start_all').on('click', 'article .start_multiple_zones', identifyAllZones)
-$(window).ready(fetchPerson);
+$(window).ready(getPerson);
 
