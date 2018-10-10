@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background-color: rgb(80, 226, 182);
+  width: 100%;
+}
+
+body {
+  max-width: 1440px;
+  width: 100%;
+  margin: auto;
+}

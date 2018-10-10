@@ -13,10 +13,12 @@ const displayUserInfo = (user_data) => {
 
   $('.user_info').prepend(`
     <h1>SmartLawn</h1>
-    <p>Zones</p>
-    <p class="user_name">${user_data.username}</p>
-    <p class="date">${date}</p>
-    <p class="time">${standardTime}</p>
+    <nav>
+      <p>Zones</p>
+      <p class="user_name">${user_data.username}</p>
+      <p class="date">${date}</p>
+      <p class="time">${standardTime}</p>
+    </nav>
     <p class="invalid_user"></p>
   `);
 };
@@ -61,9 +63,9 @@ const displayStartAllZones = () => {
 const getPerson = async () => {
   $('.user_info').empty();
 
-  const person_id = "2ee8a9ca-741d-4b1a-add3-8a7683e5aa28";
+  const person_id = "xxxxx-xxx-xxxxx-xxxxxx-xx";
   const url = `https://api.rach.io/1/public/person/${person_id}`;
-  const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
+  const bearer_token = "yyyy-yyyyyyyy-yy-yyyyyy-yyy-yyy";
   const bearer = 'Bearer ' + bearer_token;
 
   try {
@@ -90,7 +92,7 @@ const getPerson = async () => {
 const postSingleZone = async (zone_id, zone_duration) => {
   const id = zone_id;
   const url = "https://api.rach.io/1/public/zone/start"
-  const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
+  const bearer_token = "yyyy-yyyyyyyy-yy-yyyyyy-yyy-yyy";
   const bearer = 'Bearer ' + bearer_token;
   const zone_data = { id, duration: zone_duration };
 
@@ -116,7 +118,7 @@ const postSingleZone = async (zone_id, zone_duration) => {
 
 const postMultipleZones = async (zones) => {
   const url = "https://api.rach.io/1/public/zone/start_multiple"
-  const bearer_token = "76980330-8f0b-4659-a341-527364acf134";
+  const bearer_token = "yyyy-yyyyyyyy-yy-yyyyyy-yyy-yyy";
   const bearer = 'Bearer ' + bearer_token;
   const all_zones_data = { zones: zones };
 
